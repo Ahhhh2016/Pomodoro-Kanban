@@ -1,5 +1,6 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
-import { TaskModal } from '../modals/TaskModal';
+import { TaskDetailModal } from '../modals/TaskDetailModal';
+import { AddTaskModal } from 'modals/AddTaskModal';
 import { KanbanBoard } from 'interfaces';
 
 export const KANBAN_VIEW_TYPE = 'kanban-view';
@@ -32,6 +33,80 @@ export class KanbanView extends ItemView {
             const columnEl = container.createDiv({ cls: 'kanban-column' });
             columnEl.createEl('h2', { text: column.title });
 
+            // Add button to add tasks
+            const addButton = columnEl.createEl('button', { text: 'Add Task' });
+
+            addButton.addEventListener('click', () => {
+                // Recursive function to handle adding tasks
+                const handleAddTask = async () => {
+                    new AddTaskModal(this.app, async (task, action) => {
+                        // Save the current task
+                        column.tasks.push(task);
+                        await this.saveBoard();
+
+                        if (action === 'addMore') {
+                            // Reopen AddTaskModal for the next task
+                            handleAddTask();
+                        } else if (action === 'openDetails') {
+                            // Open TaskDetailModal for the current task
+                            new TaskDetailModal(this.app, task, async (updatedTask) => {
+                                // Update the task in the column
+                                const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
+                                if (taskIndex !== -1) {
+                                    column.tasks[taskIndex] = updatedTask;
+                                }
+                                await this.saveBoard();
+                                this.onOpen(); // Re-render the board
+                            }).open();
+                        } else {
+                            // Re-render the board if no further action is specified
+                            this.onOpen();
+                        }
+                    }).open();
+                };
+
+                // Start the task-adding process
+                handleAddTask();
+            });
+
+            // addButton.addEventListener('click', () => {
+            //     new AddTaskModal(this.app, async (task, action) => {
+            //         column.tasks.push(task);
+            //         await this.saveBoard();
+
+            //         if (action === 'addMore') {
+            //             new AddTaskModal(this.app, async (newTask, newAction) => {
+            //                 column.tasks.push(newTask);
+            //                 await this.saveBoard();
+            //                 if (newAction === 'openDetails') {
+            //                     new TaskDetailModal(this.app, newTask, async (updatedTask) => {
+            //                         const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
+            //                         if (taskIndex !== -1) {
+            //                             column.tasks[taskIndex] = updatedTask;
+            //                         }
+            //                         await this.saveBoard();
+            //                         this.onOpen();
+            //                     }).open();
+            //                 } else {
+            //                     this.onOpen();
+            //                 }
+            //             }).open();
+            //         } else if (action === 'openDetails') {
+            //             new TaskDetailModal(this.app, task, async (updatedTask) => {
+            //                 const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
+            //                 if (taskIndex !== -1) {
+            //                     column.tasks[taskIndex] = updatedTask;
+            //                 }
+            //                 await this.saveBoard();
+            //                 this.onOpen();
+            //             }).open();
+            //         } else {
+            //             this.onOpen(); // Re-render the board
+            //         }
+            //     }).open();
+            // });
+            
+
 			column.tasks.forEach(task => {
                 const taskEl = columnEl.createDiv({ cls: 'kanban-task' });
                 taskEl.createEl('h3', { text: task.title });
@@ -45,7 +120,7 @@ export class KanbanView extends ItemView {
 
                 // Open task detail window to modify task
                 taskEl.addEventListener('click', () => {
-                    new TaskModal(this.app, task, async (updatedTask) => {
+                    new TaskDetailModal(this.app, task, async (updatedTask) => {
                         // Update the task in the board
                         const column = this.board.columns.find(col => col.tasks.some(t => t.id === updatedTask.id));
                         if (column) {
@@ -69,23 +144,6 @@ export class KanbanView extends ItemView {
 				event.preventDefault();
 				event.dataTransfer.dropEffect = 'move';
 			});
-			
-			// columnEl.addEventListener('drop', (event) => {
-			// 	event.preventDefault();
-			// 	const taskData = event.dataTransfer.getData('text/plain');
-			// 	const task = JSON.parse(taskData);
-			
-			// 	// Remove the task from its original column
-			// 	initialBoard.columns.forEach(col => {
-			// 		col.tasks = col.tasks.filter(t => t.id !== task.id);
-			// 	});
-			
-			// 	// Add the task to the new column
-			// 	column.tasks.push(task);
-			
-			// 	// Re-render the board
-			// 	this.onOpen();
-			// });
 
             columnEl.addEventListener('drop', async (event) => {
                 event.preventDefault();

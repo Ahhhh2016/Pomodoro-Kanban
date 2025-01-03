@@ -1,7 +1,7 @@
 import { App, Modal, Setting } from 'obsidian';
 import { Task } from 'interfaces';
 
-export class TaskModal extends Modal {
+export class TaskDetailModal extends Modal {
     task: Task;
     onSave: (task: Task) => void;
 
