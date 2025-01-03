@@ -1,5 +1,8 @@
-import { App, Editor, MarkdownView, Modal, Notice, Plugin, PluginSettingTab, Setting } from 'obsidian';
-import { ItemView, WorkspaceLeaf } from 'obsidian';
+import { App, Plugin, Notice } from 'obsidian';
+import { DEFAULT_SETTINGS } from './constants';
+import { KanbanView, KANBAN_VIEW_TYPE } from './views/KanbanView';
+import { SampleModal } from './modals/SampleModal';
+import { SampleSettingTab } from './settings/SettingTab';
 
 // Remember to rename these classes and interfaces!
 
@@ -7,120 +10,9 @@ interface MyPluginSettings {
 	mySetting: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
-	mySetting: 'default'
-}
-
-interface Task {
-    id: number;
-    title: string;
-    description: string;
-}
-
-interface Column {
-    id: number;
-    title: string;
-    tasks: Task[];
-}
-
-interface KanbanBoard {
-    columns: Column[];
-}
-
-const initialBoard: KanbanBoard = {
-    columns: [
-        {
-            id: 1,
-            title: 'To Do',
-            tasks: [
-                { id: 1, title: 'Task 1', description: 'Description for Task 1' },
-                { id: 2, title: 'Task 2', description: 'Description for Task 2' }
-            ]
-        },
-        {
-            id: 2,
-            title: 'In Progress',
-            tasks: []
-        },
-        {
-            id: 3,
-            title: 'Done',
-            tasks: []
-        }
-    ]
-};
-
-export const KANBAN_VIEW_TYPE = 'kanban-view';
-
-export class KanbanView extends ItemView {
-    constructor(leaf: WorkspaceLeaf) {
-        super(leaf);
-    }
-
-    getViewType() {
-        return KANBAN_VIEW_TYPE;
-    }
-
-    getDisplayText() {
-        return 'Pomodoro Kanban';
-    }
-
-    async onOpen() {
-        const container = this.containerEl.children[1];
-        container.empty();
-        container.createEl('h1', { text: 'Kanban Board' });
-
-        // Render the initial board
-        initialBoard.columns.forEach(column => {
-            const columnEl = container.createDiv({ cls: 'kanban-column' });
-            columnEl.createEl('h2', { text: column.title });
-
-			column.tasks.forEach(task => {
-                const taskEl = columnEl.createDiv({ cls: 'kanban-task' });
-                taskEl.createEl('h3', { text: task.title });
-                taskEl.createEl('p', { text: task.description });
-
-				taskEl.setAttribute('draggable', 'true');
-				taskEl.addEventListener('dragstart', (event) => {
-					event.dataTransfer.setData('text/plain', JSON.stringify(task));
-					event.dataTransfer.effectAllowed = 'move';
-				});
-            });
-
-			columnEl.addEventListener('dragover', (event) => {
-				event.preventDefault();
-				event.dataTransfer.dropEffect = 'move';
-			});
-			
-			columnEl.addEventListener('drop', (event) => {
-				event.preventDefault();
-				const taskData = event.dataTransfer.getData('text/plain');
-				const task = JSON.parse(taskData);
-			
-				// Remove the task from its original column
-				initialBoard.columns.forEach(col => {
-					col.tasks = col.tasks.filter(t => t.id !== task.id);
-				});
-			
-				// Add the task to the new column
-				column.tasks.push(task);
-			
-				// Re-render the board
-				this.onOpen();
-			});
-
-        });
-    }
-
-    async onClose() {
-        // Cleanup if necessary
-    }
-}
 
 export default class MyPlugin extends Plugin {
 	settings: MyPluginSettings;
-
-	private board: KanbanBoard;
 
 	async onload() {
 		await this.loadSettings();
@@ -131,11 +23,8 @@ export default class MyPlugin extends Plugin {
 			new Notice('This is a Kanban board!');
 		});
 		
-		// this.addRibbonIcon('dice', 'Greet', () => {
-		// 	new Notice('Hello, world!');
-		//   });
 
-		  // Perform additional things with the ribbon
+		// Perform additional things with the ribbon
 		ribbonIconEl.addClass('my-plugin-ribbon-class');
 
 
@@ -227,44 +116,3 @@ export default class MyPlugin extends Plugin {
 	}
 }
 
-class SampleModal extends Modal {
-	constructor(app: App) {
-		super(app);
-	}
-
-	onOpen() {
-		const {contentEl} = this;
-		contentEl.setText('Woah!');
-	}
-
-	onClose() {
-		const {contentEl} = this;
-		contentEl.empty();
-	}
-}
-
-class SampleSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
-
-	constructor(app: App, plugin: MyPlugin) {
-		super(app, plugin);
-		this.plugin = plugin;
-	}
-
-	display(): void {
-		const {containerEl} = this;
-
-		containerEl.empty();
-
-		new Setting(containerEl)
-			.setName('Setting #1')
-			.setDesc('It\'s a secret')
-			.addText(text => text
-				.setPlaceholder('Enter your secret')
-				.setValue(this.plugin.settings.mySetting)
-				.onChange(async (value) => {
-					this.plugin.settings.mySetting = value;
-					await this.plugin.saveSettings();
-				}));
-	}
-}
