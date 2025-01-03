@@ -1,8 +1,10 @@
 import { App, Plugin, Notice } from 'obsidian';
-import { DEFAULT_SETTINGS } from './constants';
+import { DEFAULT_SETTINGS, initialBoard } from './constants';
 import { KanbanView, KANBAN_VIEW_TYPE } from './views/KanbanView';
 import { SampleModal } from './modals/SampleModal';
 import { SampleSettingTab } from './settings/SettingTab';
+import { KanbanBoard } from 'interfaces';
+
 
 // Remember to rename these classes and interfaces!
 
@@ -12,10 +14,16 @@ interface MyPluginSettings {
 
 
 export default class MyPlugin extends Plugin {
+	private board: KanbanBoard;
+
 	settings: MyPluginSettings;
 
 	async onload() {
 		await this.loadSettings();
+
+		// Load the saved board state or use the initial state
+		this.board = await this.loadData() || initialBoard;
+		console.log('Loaded board:', this.board);
 
 		// This creates an icon in the left ribbon.
 		const ribbonIconEl = this.addRibbonIcon('dice', 'Sample Plugin', (evt: MouseEvent) => {
@@ -81,12 +89,11 @@ export default class MyPlugin extends Plugin {
 		// When registering intervals, this function will automatically clear the interval when the plugin is disabled.
 		this.registerInterval(window.setInterval(() => console.log('setInterval'), 5 * 60 * 1000));
 
-		await this.loadSettings();
-
-		this.registerView(
-			KANBAN_VIEW_TYPE,
-			(leaf) => new KanbanView(leaf)
-		);
+        // Register the Kanban view
+        this.registerView(
+            KANBAN_VIEW_TYPE,
+            (leaf) => new KanbanView(leaf, this.board, this.saveBoard.bind(this))
+        );
 
 		this.addCommand({
 			id: 'open-kanban-board',
@@ -96,6 +103,11 @@ export default class MyPlugin extends Plugin {
 			}
 		});
 	}
+
+    async saveBoard() {
+        await this.saveData(this.board);
+		console.log('Saved board:', this.board);
+    }
 
     async activateKanbanView() {
         const leaf = this.app.workspace.getLeaf(true);
