@@ -68,43 +68,6 @@ export class KanbanView extends ItemView {
                 // Start the task-adding process
                 handleAddTask();
             });
-
-            // addButton.addEventListener('click', () => {
-            //     new AddTaskModal(this.app, async (task, action) => {
-            //         column.tasks.push(task);
-            //         await this.saveBoard();
-
-            //         if (action === 'addMore') {
-            //             new AddTaskModal(this.app, async (newTask, newAction) => {
-            //                 column.tasks.push(newTask);
-            //                 await this.saveBoard();
-            //                 if (newAction === 'openDetails') {
-            //                     new TaskDetailModal(this.app, newTask, async (updatedTask) => {
-            //                         const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
-            //                         if (taskIndex !== -1) {
-            //                             column.tasks[taskIndex] = updatedTask;
-            //                         }
-            //                         await this.saveBoard();
-            //                         this.onOpen();
-            //                     }).open();
-            //                 } else {
-            //                     this.onOpen();
-            //                 }
-            //             }).open();
-            //         } else if (action === 'openDetails') {
-            //             new TaskDetailModal(this.app, task, async (updatedTask) => {
-            //                 const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
-            //                 if (taskIndex !== -1) {
-            //                     column.tasks[taskIndex] = updatedTask;
-            //                 }
-            //                 await this.saveBoard();
-            //                 this.onOpen();
-            //             }).open();
-            //         } else {
-            //             this.onOpen(); // Re-render the board
-            //         }
-            //     }).open();
-            // });
             
 
 			column.tasks.forEach(task => {
@@ -145,6 +108,32 @@ export class KanbanView extends ItemView {
 				event.dataTransfer.dropEffect = 'move';
 			});
 
+            // columnEl.addEventListener('drop', async (event) => {
+            //     event.preventDefault();
+            //     const taskData = event.dataTransfer.getData('text/plain');
+            //     const task = JSON.parse(taskData);
+            
+            //     // Remove the task from its original column
+            //     this.board.columns.forEach(col => {
+            //         col.tasks = col.tasks.filter(t => t.id !== task.id);
+            //     });
+
+            //     // // Add the task to the new column
+            //     // const targetColumn = this.board.columns.find(col => col.id === column.id);
+            //     // if (targetColumn) {
+            //     //     targetColumn.tasks.push(task);
+            //     // }
+			
+			// 	// Add the task to the new column
+			// 	column.tasks.push(task);
+            
+            //     // Save the updated board
+            //     await this.saveBoard();
+            
+            //     // Re-render the board
+            //     this.onOpen();
+            // });
+
             columnEl.addEventListener('drop', async (event) => {
                 event.preventDefault();
                 const taskData = event.dataTransfer.getData('text/plain');
@@ -154,15 +143,24 @@ export class KanbanView extends ItemView {
                 this.board.columns.forEach(col => {
                     col.tasks = col.tasks.filter(t => t.id !== task.id);
                 });
-
-                // // Add the task to the new column
-                // const targetColumn = this.board.columns.find(col => col.id === column.id);
-                // if (targetColumn) {
-                //     targetColumn.tasks.push(task);
-                // }
-			
-				// Add the task to the new column
-				column.tasks.push(task);
+            
+                // Determine the drop position
+                const dropY = event.clientY;
+                let insertIndex = column.tasks.length; // Default to end of the column
+            
+                // Find the correct index to insert the task
+                const taskElements = Array.from(columnEl.querySelectorAll('.kanban-task'));
+                for (let i = 0; i < taskElements.length; i++) {
+                    const taskElement = taskElements[i];
+                    const taskRect = taskElement.getBoundingClientRect();
+                    if (dropY < taskRect.top + taskRect.height / 2) {
+                        insertIndex = i;
+                        break;
+                    }
+                }
+            
+                // Insert the task at the calculated index
+                column.tasks.splice(insertIndex, 0, task);
             
                 // Save the updated board
                 await this.saveBoard();
