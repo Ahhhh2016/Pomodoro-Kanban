@@ -1,9 +1,12 @@
 import { App, Modal, Setting } from 'obsidian';
 import { Task } from 'interfaces';
+import { TimerModal } from './TimerModal';
 
 export class TaskDetailModal extends Modal {
     task: Task;
     onSave: (task: Task) => void;
+
+    private timerModal: TimerModal | null = null;
 
     constructor(app: App, task: Task, onSave: (task: Task) => void) {
         super(app);
@@ -14,6 +17,7 @@ export class TaskDetailModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
+        contentEl.addClass('task-detail-modal');
 
         contentEl.createEl('h2', { text: 'Edit Task' });
 
@@ -37,10 +41,42 @@ export class TaskDetailModal extends Modal {
                     this.onSave(this.task);
                     this.close();
                 }));
+
+        // Add a close button
+        new Setting(contentEl)
+        .addButton(button => button
+            .setButtonText('Close')
+            .onClick(() => {
+                this.close();
+            }));
+
+        new Setting(contentEl)
+            .addButton(button => button
+                .setButtonText('Start Timer')
+                .onClick(() => {
+                    if (!this.timerModal || this.timerModal.isClosed()) {
+                        this.timerModal = new TimerModal(this.app, this.task);
+                        this.timerModal.open();
+                    }
+                }));
+
+        // Separate logic to start the timer
+        // new Setting(contentEl)
+        // .addButton(button => button
+        //     .setButtonText('Start Timer')
+        //     .onClick(() => {
+        //         // Opens the timer modal independently
+        //         const timerModal = new TimerModal(this.app, this.task);
+        //         timerModal.open();
+        //     }));
     }
 
     onClose() {
         const { contentEl } = this;
         contentEl.empty();
+        // if (this.timerModal) {
+        //     this.timerModal.close();
+        //     this.timerModal = null;
+        // }
     }
 }

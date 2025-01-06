@@ -21,3 +21,51 @@ If your plugin does not need CSS, delete this file.
     padding: 5px;
     margin: 5px 0;
 }
+
+/* Ensure the modal container aligns with task-detail-modal */
+.modal-container {
+    position: relative; /* Or fixed, if needed */
+    display: flex;
+    justify-content: center; /* Centers horizontally */
+    align-items: center; /* Centers vertically */
+    top: 0;
+    left: 0;
+    transform: none; /* Reset inherited transforms */
+    width: auto;
+    height: auto;
+    z-index: 1000;
+    background: transparent; /* Ensure no unwanted background */
+}
+
+/* Prevent base modal styles from interfering */
+.modal-container > * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.task-detail-modal {
+    position: fixed;
+    left: 50%; /* Adjust to be next to the timer window */
+    transform: translateX(-50%);
+    top: 50px; /* Align with the timer window */
+    width: 400px; /* Adjust as needed */
+    height: 400px; 
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    z-index: 1000; /* Ensure it appears above other elements */
+} 
+
+.timer-modal {
+    position: fixed;
+    left: calc(50% - 420px); /* Adjust as needed */
+    top: 50px; /* Adjust as needed */
+    width: 200px; /* Adjust as needed */
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: white;
+    z-index: 1000; /* Ensure it appears above other elements */
+} 
+

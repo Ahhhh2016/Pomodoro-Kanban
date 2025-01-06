@@ -94,45 +94,38 @@ export class KanbanView extends ItemView {
                         }
 
                         // Save the updated board
-                        console.log('Saving board:', this.board);
                         await this.saveBoard();
 
                         // Re-render the board
                         this.onOpen();
                     }).open();
                 });
+
+                // taskEl.addEventListener('click', () => {
+                //     const taskDetailModal = new TaskDetailModal(this.app, task, async (updatedTask) => {
+                //         // Update the task in the board
+                //         const column = this.board.columns.find(col => col.tasks.some(t => t.id === updatedTask.id));
+                //         if (column) {
+                //             const taskIndex = column.tasks.findIndex(t => t.id === updatedTask.id);
+                //             if (taskIndex !== -1) {
+                //                 column.tasks[taskIndex] = updatedTask;
+                //             }
+                //         }
+                
+                //         // Save the updated board
+                //         await this.saveBoard();
+                
+                //         // Re-render the board
+                //         this.onOpen();
+                //     });
+                //     taskDetailModal.open();
+                // });
             });
 
 			columnEl.addEventListener('dragover', (event) => {
 				event.preventDefault();
 				event.dataTransfer.dropEffect = 'move';
 			});
-
-            // columnEl.addEventListener('drop', async (event) => {
-            //     event.preventDefault();
-            //     const taskData = event.dataTransfer.getData('text/plain');
-            //     const task = JSON.parse(taskData);
-            
-            //     // Remove the task from its original column
-            //     this.board.columns.forEach(col => {
-            //         col.tasks = col.tasks.filter(t => t.id !== task.id);
-            //     });
-
-            //     // // Add the task to the new column
-            //     // const targetColumn = this.board.columns.find(col => col.id === column.id);
-            //     // if (targetColumn) {
-            //     //     targetColumn.tasks.push(task);
-            //     // }
-			
-			// 	// Add the task to the new column
-			// 	column.tasks.push(task);
-            
-            //     // Save the updated board
-            //     await this.saveBoard();
-            
-            //     // Re-render the board
-            //     this.onOpen();
-            // });
 
             columnEl.addEventListener('drop', async (event) => {
                 event.preventDefault();
