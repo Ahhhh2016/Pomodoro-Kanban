@@ -14,9 +14,10 @@ export class AddTaskModal extends Modal {
     onOpen() {
         const { contentEl } = this;
         contentEl.empty();
+        contentEl.addClass('add-task-modal');
 
         contentEl.createEl('h2', { text: 'Add Task' });
-
+        console.log("here");
         new Setting(contentEl)
             .setName('Title')
             .addText(text => text

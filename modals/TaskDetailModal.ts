@@ -1,12 +1,15 @@
 import { App, Modal, Setting } from 'obsidian';
 import { Task } from 'interfaces';
 import { TimerModal } from './TimerModal';
+import { FloatingTimer } from 'FloatingTimer'; 
+
 
 export class TaskDetailModal extends Modal {
     task: Task;
     onSave: (task: Task) => void;
 
-    private timerModal: TimerModal | null = null;
+    // private timerModal: TimerModal | null = null;
+    private floatingTimer: FloatingTimer | null = null;
 
     constructor(app: App, task: Task, onSave: (task: Task) => void) {
         super(app);
@@ -50,15 +53,15 @@ export class TaskDetailModal extends Modal {
                 this.close();
             }));
 
-        new Setting(contentEl)
-            .addButton(button => button
-                .setButtonText('Start Timer')
-                .onClick(() => {
-                    if (!this.timerModal || this.timerModal.isClosed()) {
-                        this.timerModal = new TimerModal(this.app, this.task);
-                        this.timerModal.open();
-                    }
-                }));
+        // new Setting(contentEl)
+        //     .addButton(button => button
+        //         .setButtonText('Start Timer')
+        //         .onClick(() => {
+        //             if (!this.timerModal || this.timerModal.isClosed()) {
+        //                 this.timerModal = new TimerModal(this.app, this.task);
+        //                 this.timerModal.open();
+        //             }
+        //         }));
 
         // Separate logic to start the timer
         // new Setting(contentEl)
@@ -69,6 +72,15 @@ export class TaskDetailModal extends Modal {
         //         const timerModal = new TimerModal(this.app, this.task);
         //         timerModal.open();
         //     }));
+
+        // Start Floating Timer button
+        new Setting(contentEl)
+        .addButton(button => 
+            button.setButtonText('Start Timer')
+                .onClick(() => {
+                    this.openFloatingTimer();
+                })
+        );
     }
 
     onClose() {
@@ -78,5 +90,13 @@ export class TaskDetailModal extends Modal {
         //     this.timerModal.close();
         //     this.timerModal = null;
         // }
+    }
+
+
+    private openFloatingTimer() {
+        // Check if a floating timer already exists for this task
+        if (!this.floatingTimer) {
+            this.floatingTimer = new FloatingTimer(this.task.id.toString()); // Pass the task ID to the floating timer
+        }
     }
 }

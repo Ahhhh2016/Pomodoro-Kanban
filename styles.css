@@ -58,7 +58,7 @@ If your plugin does not need CSS, delete this file.
     z-index: 1000; /* Ensure it appears above other elements */
 } 
 
-.timer-modal {
+.add-task-modal {
     position: fixed;
     left: calc(50% - 420px); /* Adjust as needed */
     top: 50px; /* Adjust as needed */
