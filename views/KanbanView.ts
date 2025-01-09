@@ -2,6 +2,7 @@ import { ItemView, WorkspaceLeaf } from 'obsidian';
 import { TaskDetailModal } from '../modals/TaskDetailModal';
 import { AddTaskModal } from 'modals/AddTaskModal';
 import { KanbanBoard } from 'interfaces';
+import { fixedBar } from '../constants';
 
 export const KANBAN_VIEW_TYPE = 'kanban-view';
 
@@ -26,7 +27,17 @@ export class KanbanView extends ItemView {
     async onOpen() {
         const container = this.containerEl.children[1];
         container.empty();
+        container.addClass('kanban-board');
+
+        // create fixed bar
+        fixedBar.createFixedTimerBar(container);
+
+        // create title
         container.createEl('h1', { text: 'Pomodoro Kanban Board' });
+
+        // const kanbanContainer = document.querySelector('.kanban-board'); // Replace with your Kanban container class or ID
+        // createFixedTimerBar(kanbanContainer);
+
 
         // Render the board
         this.board.columns.forEach(column => {
@@ -167,5 +178,9 @@ export class KanbanView extends ItemView {
 
     async onClose() {
         // Cleanup if necessary
+        const fixedBar = document.getElementById('fixed-timer-bar');
+        if (fixedBar) {
+            fixedBar.remove();
+        }
     }
 }

@@ -7,6 +7,11 @@ If your plugin does not need CSS, delete this file.
 
 */
 
+.kanban-board {
+    position: relative; /* To contain absolutely positioned elements */
+}
+
+
 .kanban-column {
     border: 1px solid #ccc;
     padding: 10px;

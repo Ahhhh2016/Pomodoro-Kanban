@@ -1,3 +1,4 @@
+import { FixedBar } from 'FixedBar';
 import { KanbanBoard, GlobalState } from './interfaces';
 
 export const DEFAULT_SETTINGS = {
@@ -31,6 +32,8 @@ export const globalState: GlobalState = {
     runningTaskId: null,
     timers: {},
 };
+
+export const fixedBar = new FixedBar();
 
 export function startTimer(taskId: string) {
     // 如果有正在运行的 Timer，先暂停它
