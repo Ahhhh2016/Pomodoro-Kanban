@@ -1,6 +1,5 @@
 import { App, Modal, Setting } from 'obsidian';
 import { Task } from 'interfaces';
-import { TimerModal } from './TimerModal';
 import { FloatingTimer } from 'FloatingTimer'; 
 
 
@@ -45,33 +44,12 @@ export class TaskDetailModal extends Modal {
                     this.close();
                 }));
 
-        // Add a close button
-        new Setting(contentEl)
-        .addButton(button => button
-            .setButtonText('Close')
-            .onClick(() => {
-                this.close();
-            }));
+         // Add a close button
+        const closeButton = contentEl.createEl('button', { cls: 'close-button', text: '×' });
+        closeButton.addEventListener('click', () => {
+            this.close();
+        });
 
-        // new Setting(contentEl)
-        //     .addButton(button => button
-        //         .setButtonText('Start Timer')
-        //         .onClick(() => {
-        //             if (!this.timerModal || this.timerModal.isClosed()) {
-        //                 this.timerModal = new TimerModal(this.app, this.task);
-        //                 this.timerModal.open();
-        //             }
-        //         }));
-
-        // Separate logic to start the timer
-        // new Setting(contentEl)
-        // .addButton(button => button
-        //     .setButtonText('Start Timer')
-        //     .onClick(() => {
-        //         // Opens the timer modal independently
-        //         const timerModal = new TimerModal(this.app, this.task);
-        //         timerModal.open();
-        //     }));
 
         // Start Floating Timer button
         new Setting(contentEl)

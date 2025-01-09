@@ -54,6 +54,12 @@ export class AddTaskModal extends Modal {
                     this.onSave(this.task, 'close');
                     this.close();
                 }));
+
+        // Add a close button
+        const closeButton = contentEl.createEl('button', { cls: 'close-button', text: '×' });
+        closeButton.addEventListener('click', () => {
+            this.close();
+        });
     }
 
     onClose() {

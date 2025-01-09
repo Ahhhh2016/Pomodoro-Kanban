@@ -52,7 +52,7 @@ If your plugin does not need CSS, delete this file.
 
 .task-detail-modal {
     position: fixed;
-    left: 50%; /* Adjust to be next to the timer window */
+    left: 50%; 
     transform: translateX(-50%);
     top: 50px; /* Align with the timer window */
     width: 400px; /* Adjust as needed */
@@ -65,12 +65,62 @@ If your plugin does not need CSS, delete this file.
 
 .add-task-modal {
     position: fixed;
-    left: calc(50% - 420px); /* Adjust as needed */
-    top: 50px; /* Adjust as needed */
-    width: 200px; /* Adjust as needed */
+    left: 50%; /* Adjust to be next to the timer window */
+    transform: translateX(-50%);
+    top: 50px; /* Align with the timer window */
+    width: 400px; /* Adjust as needed */
+    height: 400px; 
     border: 1px solid #ccc;
     padding: 10px;
     background-color: white;
     z-index: 1000; /* Ensure it appears above other elements */
 } 
 
+.floating-timer {
+    position: fixed;
+    top: 50px; /* Align with the task-detail-modal */
+    left: calc(50% - 450px); /* Adjust to be next to the task-detail-modal */
+    z-index: 1000;
+    background-color: #444;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    width: 200px;
+    transition: all 0.3s ease;
+}
+
+.floating-timer:hover {
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.floating-timer button {
+    background-color: #555;
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    margin: 5px 0;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.floating-timer button:hover {
+    background-color: #666;
+}
+
+
+.close-button {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: #333;
+}
+
+.close-button:hover {
+    color: #f00; /* Change color on hover */
+}

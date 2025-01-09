@@ -30,7 +30,7 @@ export class FloatingTimer {
             <div>Elapsed Time: <span id="elapsed-time">0</span> seconds</div>
             <button id="start-timer">Start</button>
             <button id="pause-timer">Pause</button>
-            <button id="close-timer">Close</button>
+            <button id="close-timer" class="close-button" aria-label="Close">&times;</button>
         `;
 
         document.body.appendChild(this.timerContainer);
