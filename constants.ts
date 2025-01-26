@@ -1,5 +1,5 @@
-import { FixedBar } from 'FixedBar';
 import { KanbanBoard, GlobalState } from './interfaces';
+import { FixedBar } from 'FixedBar';
 
 export const DEFAULT_SETTINGS = {
     mySetting: 'default',
@@ -52,6 +52,7 @@ export function startTimer(taskId: string) {
 }
 
 export function pauseTimer(taskId: string) {
+    console.log("pause");
     if (globalState.timers[taskId]) {
         globalState.timers[taskId].isRunning = false;
     }

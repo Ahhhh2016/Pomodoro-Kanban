@@ -1,4 +1,4 @@
-import { globalState, startTimer, pauseTimer, stopTimer } from './constants';
+import { globalState, startTimer, pauseTimer, stopTimer, fixedBar } from './constants';
 
 export class FloatingTimer {
     private timerContainer: HTMLElement;
@@ -84,32 +84,32 @@ export class FloatingTimer {
     //     }, 1000);
     // }
 
-    createFixedTimerBar() {
-        const timerBar = document.createElement('div');
-        timerBar.id = 'fixed-timer-bar';
-        Object.assign(timerBar.style, {
-            position: 'fixed',
-            top: '0',
-            width: '100%',
-            background: '#222',
-            color: 'white',
-            padding: '10px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            zIndex: '100',
-        });
+    // createFixedTimerBar() {
+    //     const timerBar = document.createElement('div');
+    //     timerBar.id = 'fixed-timer-bar';
+    //     Object.assign(timerBar.style, {
+    //         position: 'fixed',
+    //         top: '0',
+    //         width: '100%',
+    //         background: '#222',
+    //         color: 'white',
+    //         padding: '10px',
+    //         display: 'flex',
+    //         justifyContent: 'space-between',
+    //         alignItems: 'center',
+    //         zIndex: '100',
+    //     });
 
-        timerBar.innerHTML = `
-            <div id="timer-title">Timer for Task: <span id="task-name"></span></div>
-            <div id="timer-controls">
-                <button id="pause-timer-btn">Pause</button>
-                <button id="stop-timer-btn">Stop</button>
-            </div>
-        `;
+    //     timerBar.innerHTML = `
+    //         <div id="timer-title">Timer for Task: <span id="task-name"></span></div>
+    //         <div id="timer-controls">
+    //             <button id="pause-timer-btn">Pause</button>
+    //             <button id="stop-timer-btn">Stop</button>
+    //         </div>
+    //     `;
 
-        document.body.appendChild(timerBar);
-    }
+    //     document.body.appendChild(timerBar);
+    // }
 
     closeFloatingWindow() {
         this.timerContainer.remove();
@@ -123,38 +123,36 @@ export class FloatingTimer {
         // }
 
         // Update or create the Fixed Bar
-        const fixedBar = document.getElementById('fixed-timer-bar');
+        // const fixedBar = document.getElementById('fixed-timer-bar');
+        
         if (fixedBar) {
-            this.updateFixedBar(this.taskId);
-        } else {
-            this.createFixedTimerBar();
-            this.updateFixedBar(this.taskId);
-        }
+            fixedBar.updateFixedBar(this.taskId);
+        } 
     }
 
-    updateFixedBar(taskId: string) {
-        const fixedBar = document.getElementById('fixed-timer-bar');
-        if (fixedBar) {
-            const timer = globalState.timers[taskId];
-            if (timer?.isRunning) {
-                fixedBar.innerHTML = `
-                    <div>Task: ${taskId}</div>
-                    <div>Elapsed Time: ${timer.elapsedTime} seconds</div>
-                    <button id="restart-timer">Restart</button>
-                    <button id="stop-timer">Stop</button>
-                `;
-                fixedBar.querySelector('#restart-timer')?.addEventListener('click', () => {
-                    startTimer(taskId);
-                });
-                fixedBar.querySelector('#stop-timer')?.addEventListener('click', () => {
-                    stopTimer(taskId);
-                    fixedBar.innerHTML = '<div>No timer is running</div>';
-                });
-            } else {
-                fixedBar.innerHTML = '<div>No timer is running</div>';
-            }
-        }
-    }
+    // updateFixedBar(taskId: string) {
+    //     const fixedBar = document.getElementById('fixed-timer-bar');
+    //     if (fixedBar) {
+    //         const timer = globalState.timers[taskId];
+    //         if (timer?.isRunning) {
+    //             fixedBar.innerHTML = `
+    //                 <div>Task: ${taskId}</div>
+    //                 <div>Elapsed Time: ${timer.elapsedTime} seconds</div>
+    //                 <button id="restart-timer">Restart</button>
+    //                 <button id="stop-timer">Stop</button>
+    //             `;
+    //             fixedBar.querySelector('#restart-timer')?.addEventListener('click', () => {
+    //                 startTimer(taskId);
+    //             });
+    //             fixedBar.querySelector('#stop-timer')?.addEventListener('click', () => {
+    //                 stopTimer(taskId);
+    //                 fixedBar.innerHTML = '<div>No timer is running</div>';
+    //             });
+    //         } else {
+    //             fixedBar.innerHTML = '<div>No timer is running</div>';
+    //         }
+    //     }
+    // }
 
     private clearInterval() {
         if (this.intervalId !== null) {

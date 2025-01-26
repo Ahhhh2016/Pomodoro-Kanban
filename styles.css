@@ -7,12 +7,12 @@ If your plugin does not need CSS, delete this file.
 
 */
 
-.kanban-board {
+.pomodoro-kanban-board {
     position: relative; /* To contain absolutely positioned elements */
 }
 
 
-.kanban-column {
+.pomodoro-kanban-column {
     border: 1px solid #ccc;
     padding: 10px;
     margin: 10px;
@@ -21,7 +21,7 @@ If your plugin does not need CSS, delete this file.
     vertical-align: top;
 }
 
-.kanban-task {
+.pomodoro-kanban-task {
     border: 1px solid #aaa;
     padding: 5px;
     margin: 5px 0;

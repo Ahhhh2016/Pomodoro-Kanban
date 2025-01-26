@@ -27,7 +27,7 @@ export class KanbanView extends ItemView {
     async onOpen() {
         const container = this.containerEl.children[1];
         container.empty();
-        container.addClass('kanban-board');
+        container.addClass('pomodoro-kanban-board');
 
         // create fixed bar
         fixedBar.createFixedTimerBar(container);
@@ -41,7 +41,7 @@ export class KanbanView extends ItemView {
 
         // Render the board
         this.board.columns.forEach(column => {
-            const columnEl = container.createDiv({ cls: 'kanban-column' });
+            const columnEl = container.createDiv({ cls: 'pomodoro-kanban-column' });
             columnEl.createEl('h2', { text: column.title });
 
             // Add button to add tasks
@@ -82,7 +82,7 @@ export class KanbanView extends ItemView {
             
 
 			column.tasks.forEach(task => {
-                const taskEl = columnEl.createDiv({ cls: 'kanban-task' });
+                const taskEl = columnEl.createDiv({ cls: 'pomodoro-kanban-task' });
                 taskEl.createEl('h3', { text: task.title });
                 taskEl.createEl('p', { text: task.description });
 
