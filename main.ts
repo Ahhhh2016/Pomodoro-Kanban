@@ -1,4 +1,4 @@
-import { App, Plugin, Notice } from 'obsidian';
+import { App, Plugin, Notice, Editor, MarkdownView } from 'obsidian';
 import { DEFAULT_SETTINGS, initialBoard } from './constants';
 import { KanbanView, KANBAN_VIEW_TYPE } from './views/KanbanView';
 import { SampleModal } from './modals/SampleModal';

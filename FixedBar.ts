@@ -11,7 +11,7 @@ export class FixedBar {
         // this.createFixedTimerBar();
     }
     
-    createFixedTimerBar(container) {
+    createFixedTimerBar(container: Element) {
         const timerBar = document.createElement('div');
         timerBar.id = 'fixed-timer-bar';
         timerBar.setAttribute('data-plugin', 'pomodoro-kanban');
@@ -122,10 +122,12 @@ export class FixedBar {
                 if (this.intervalId === null) {
                     this.intervalId = window.setInterval(() => {
                         timer.elapsedTime++;
-                        const elapsedTimeElement = this.timerContainer.querySelector('#elapsed-time');
-                        if (elapsedTimeElement) {
-                            // elapsedTimeElement.textContent = timer.elapsedTime.toString();
-                            elapsedTimeElement.textContent = `Elapsed Time: ${timer.elapsedTime} seconds`;
+                        if (this.timerContainer) {
+                            const elapsedTimeElement = this.timerContainer.querySelector('#elapsed-time');
+                            if (elapsedTimeElement) {
+                                // elapsedTimeElement.textContent = timer.elapsedTime.toString();
+                                elapsedTimeElement.textContent = `Elapsed Time: ${timer.elapsedTime} seconds`;
+                            }
                         }
                     }, 1000);
                 }

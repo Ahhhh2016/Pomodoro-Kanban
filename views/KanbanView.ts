@@ -88,8 +88,10 @@ export class KanbanView extends ItemView {
 
 				taskEl.setAttribute('draggable', 'true');
 				taskEl.addEventListener('dragstart', (event) => {
-					event.dataTransfer.setData('text/plain', JSON.stringify(task));
-					event.dataTransfer.effectAllowed = 'move';
+                    if (event.dataTransfer) { // Check if dataTransfer is not null
+						event.dataTransfer.setData('text/plain', JSON.stringify(task));
+						event.dataTransfer.effectAllowed = 'move';
+					}
 				});
 
                 // Open task detail window to modify task
@@ -135,11 +137,18 @@ export class KanbanView extends ItemView {
 
 			columnEl.addEventListener('dragover', (event) => {
 				event.preventDefault();
-				event.dataTransfer.dropEffect = 'move';
+                if (event.dataTransfer) { // Check if dataTransfer is not null
+                    event.dataTransfer.dropEffect = 'move';
+                }
+				
 			});
 
             columnEl.addEventListener('drop', async (event) => {
                 event.preventDefault();
+
+                 // Ensure event.dataTransfer is not null
+                if (!event.dataTransfer) return;
+                
                 const taskData = event.dataTransfer.getData('text/plain');
                 const task = JSON.parse(taskData);
             
